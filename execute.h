@@ -2,7 +2,7 @@
 #define EXECUTE_H
 
 #include "input.h"
-
+#include "memstore.h"
 typedef enum {
     META_COMMAND_SUCCESS,
     META_COMMAND_UNKNOWN
@@ -20,6 +20,7 @@ typedef enum {
 
 typedef struct {
     StatementType type;
+    Row rowToInsert;
 } Statement;
 
 void executeStatement(Statement* statement);
