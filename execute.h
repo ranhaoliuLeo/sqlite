@@ -11,7 +11,12 @@ typedef enum {
 typedef enum {
     PREPARE_SUCCESS,
     PREPARE_UNKNOWN,
+    PREPARE_SYNTAX_ERR,
 } PrepareResult;
+
+typedef enum {
+    EXECUTE_TABLE_FULL = 1,
+} ExcuteResult;
 
 typedef enum {
     STATEMENT_INSERT,
@@ -23,10 +28,14 @@ typedef struct {
     Row rowToInsert;
 } Statement;
 
-void executeStatement(Statement* statement);
+ExcuteResult executeStatement(Statement* statement, Table* table);
 
 MetaCommandResult doMetaCommand(InputBuffer* inputBuffer);
 
 PrepareResult prepareStatement(InputBuffer* inputBuffer, Statement* statement);
+
+ExcuteResult executeInsert(Statement* statement, Table* table);
+
+ExcuteResult executeSelect(Statement* statement, Table* table);
 
 #endif

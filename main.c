@@ -7,6 +7,7 @@
 #include "global.h"
 
 int main(int argc, char *argv[]) {
+    Table* table = newTable();
     InputBuffer *input_buffer = new_input_buffer();
     while (true) {
         print_prompt();
@@ -28,7 +29,14 @@ int main(int argc, char *argv[]) {
             printf("Unrecognize keyword at start of '%s'. \n", input_buffer->buffer);
             break;
         }
-        executeStatement(&statement);
+        switch(executeStatement(&statement, table)) {
+            case (EXIT_SUCCESS):
+                printf("done!\n");
+                break;
+            case (EXECUTE_TABLE_FULL):
+                printf("Error: Table full.\n");
+                break;
+        }
         printf("Executed.\n");
     }
 }

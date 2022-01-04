@@ -38,14 +38,32 @@ PrepareResult prepareStatement(InputBuffer* inputBuffer, Statement* statement) {
 }
 
 // executeStatement 虚拟机执行命令
-void executeStatement(Statement* statement) {
+ExcuteResult executeStatement(Statement* statement, Table* table) {
     switch (statement->type) {
     case (STATEMENT_INSERT):
-         printf("This is where we would do an insert.\n");
-        break;
-    
+        return executeInsert(statement, table);
     case (STATEMENT_SELECT):
-        printf("This is where we would do a select.\n");
-        break;
+        return executeSelect(statement, table);
     }
+}
+
+ExcuteResult executeInsert(Statement* statement, Table* table) {
+    if (table->numRows >= TABLE_MAX_ROWS) {
+        return EXECUTE_TABLE_FULL;
+    }
+
+    Row* rowToInsert = &(statement->rowToInsert);
+    serializeRow(rowToInsert, rowSlot(table, table->numRows));
+    table->numRows += 1;
+
+    return EXIT_SUCCESS;
+}
+
+ExcuteResult executeSelect(Statement* statement, Table* table) {
+    Row row;
+    for (uint32_t i = 0; i < table->numRows; i++) {
+        deserializeRow(rowSlot(table, i), &row);
+        printRow(&row);
+    }
+    return EXIT_SUCCESS;
 }
